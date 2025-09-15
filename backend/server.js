@@ -28,7 +28,10 @@ app.get('/health', (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
-    const result = await client.query('INSERT INTO users(username, password) VALUES($1, $2) RETURNING *', [username, password]);
+    const result = await client.query(
+      'INSERT INTO users(username, password) VALUES($1, $2) RETURNING *',
+      [username, password]
+    );
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err.stack);
@@ -36,6 +39,10 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Backend listening at http://localhost:${port}`);
-});
+// ✅ Signin endpoint
+app.post('/signin', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const result = await client.query(
+      'SELECT * FROM users WHERE username = $1 AND password = $2',
+      [username, password]
